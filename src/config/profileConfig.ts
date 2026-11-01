@@ -12,7 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "Craig Huang",
 
 	// 个人签名
-	bio: "Hello, I'm Craig.",
+	bio: "Truth is, you'll never be\nready. You just need to\nbe brave enough to try.",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
@@ -22,22 +22,10 @@ export const profileConfig: ProfileConfig = {
 	// showName: true 时显示图标和名称，false 时只显示图标
 	links: [
 		{
-			name: "GitHub",
-			icon: "fa7-brands:github",
-			url: "https://github.com/huangzongyu6",
-			showName: false,
-		},
-		{
-			name: "Email",
+			name: "resei@foxmail.com",
 			icon: "fa7-solid:envelope",
 			url: "mailto:resei@foxmail.com",
-			showName: false,
-		},
-		{
-			name: "RSS",
-			icon: "fa7-solid:rss",
-			url: "/rss/",
-			showName: false,
+			showName: true,
 		},
 	],
 };

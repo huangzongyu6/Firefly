@@ -109,6 +109,8 @@ if (isLocalSrcLogo) {
         "overflow-visible! h-18 px-4"
     ]}>
         <div class="mx-auto h-full w-full max-w-(--page-width) grid grid-cols-[auto_minmax(0,1fr)_auto] items-center">
+            {/* 左上角品牌按钮：未配置标题和 logo 时整体隐藏 */}
+            {(siteConfig.navbar.title || siteConfig.navbar.logo) && (
             <a href={url('/')} class="btn-plain scale-animation rounded-lg h-13 px-3 md:px-5 font-bold active:scale-95">
                 <div class:list={[
                     "flex flex-row items-center text-md",
@@ -137,6 +139,7 @@ if (isLocalSrcLogo) {
                     {navbarTitle}
                 </div>
             </a>
+            )}
             <div class:list={[
                 "hidden lg:flex items-center space-x-1 col-start-2",
                 isNavbarMenuCentered
@@ -157,16 +160,16 @@ if (isLocalSrcLogo) {
                         <Icon is:inline name="material-symbols:music-note-rounded" class="text-[1.25rem]"></Icon>
                     </button>
                 )}
-                {backgroundWallpaper.playerEnable && backgroundWallpaper.mode !== "none" && (
+                {musicPlayerConfig.showInNavbar && (
                     <button
-                        aria-label={i18n(I18nKey.videoPlay)}
+                        aria-label={i18n(I18nKey.musicPlay)}
                         class="btn-plain scale-animation rounded-lg h-9 w-9 md:h-11 md:w-11 active:scale-90"
-                        id="bg-player-toggle"
-                        data-i18n-play={i18n(I18nKey.videoPlay)}
-                        data-i18n-pause={i18n(I18nKey.videoPause)}
+                        id="music-play-toggle"
+                        data-i18n-play={i18n(I18nKey.musicPlay)}
+                        data-i18n-pause={i18n(I18nKey.musicPause)}
                     >
-                        <span class="bg-player-icon-play"><Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" /></span>
-                        <span class="bg-player-icon-pause hidden"><Icon is:inline name="material-symbols:pause-rounded" class="text-[1.5rem]" /></span>
+                        <span class="music-play-icon-play"><Icon is:inline name="material-symbols:play-arrow-rounded" class="text-[1.5rem]" /></span>
+                        <span class="music-play-icon-pause hidden"><Icon is:inline name="material-symbols:pause-rounded" class="text-[1.5rem]" /></span>
                     </button>
                 )}
                 {hasDisplaySettings && (
@@ -223,48 +226,33 @@ function loadButtonScript() {
         };
     }
 
-    // 背景视频播放器控制按钮
-    let bgPlayerBtn = document.getElementById("bg-player-toggle");
-    if (bgPlayerBtn) {
-        bgPlayerBtn.onclick = function () {
-            window.dispatchEvent(new CustomEvent("bg-player-toggle"));
+    // 导航栏播放按钮：直接控制音乐播放器（播放/暂停歌单）
+    let musicPlayBtn = document.getElementById("music-play-toggle");
+    if (musicPlayBtn) {
+        musicPlayBtn.onclick = function () {
+            var music = (window as any).__fireflyMusic;
+            if (music && typeof music.togglePlay === "function") {
+                music.togglePlay();
+            }
         };
-        function toggleBgPlayerIcon(playing: boolean) {
-            var playIcon = bgPlayerBtn!.querySelector(".bg-player-icon-play");
-            var pauseIcon = bgPlayerBtn!.querySelector(".bg-player-icon-pause");
+        function toggleMusicPlayIcon(playing: boolean) {
+            var playIcon = musicPlayBtn!.querySelector(".music-play-icon-play");
+            var pauseIcon = musicPlayBtn!.querySelector(".music-play-icon-pause");
             if (playIcon && pauseIcon) {
                 playIcon.classList.toggle("hidden", playing);
                 pauseIcon.classList.toggle("hidden", !playing);
             }
-            var i18nPlay = bgPlayerBtn!.getAttribute("data-i18n-play") ?? "";
-            var i18nPause = bgPlayerBtn!.getAttribute("data-i18n-pause") ?? "";
+            var i18nPlay = musicPlayBtn!.getAttribute("data-i18n-play") ?? "";
+            var i18nPause = musicPlayBtn!.getAttribute("data-i18n-pause") ?? "";
             var label = playing ? i18nPause : i18nPlay;
-            bgPlayerBtn!.setAttribute("title", label);
-            bgPlayerBtn!.setAttribute("aria-label", label);
+            musicPlayBtn!.setAttribute("title", label);
+            musicPlayBtn!.setAttribute("aria-label", label);
         }
-        window.addEventListener("bg-player-state-change", function (e) {
+        window.addEventListener("fm:play-state", function (e) {
             var ce = e as CustomEvent;
-            var playing = ce.detail && ce.detail.playing;
-            toggleBgPlayerIcon(playing);
+            var playing = ce.detail && ce.detail.isPlaying;
+            toggleMusicPlayIcon(playing);
         });
-        // 切换壁纸模式时隐藏/显示播放按钮
-        window.addEventListener("wallpaperModeChange", function (e) {
-            var ce = e as CustomEvent;
-            var mode = ce.detail && ce.detail.mode;
-            bgPlayerBtn!.style.display = mode === "none" ? "none" : "";
-        });
-        // Swup 导航时同步播放按钮状态（BackgroundPlayer 可能被重建，也可能持久存在）
-        function syncBgPlayerBtn() {
-            var playing = document.documentElement.hasAttribute("data-bg-video-playing");
-            toggleBgPlayerIcon(playing);
-        }
-        if (window.swup && window.swup.hooks) {
-            window.swup.hooks.on("content:replace", syncBgPlayerBtn);
-        } else {
-            document.addEventListener("swup:enable", function () {
-                window.swup.hooks.on("content:replace", syncBgPlayerBtn);
-            });
-        }
     }
 
     let themeSwitchBtn = document.getElementById("scheme-switch");
