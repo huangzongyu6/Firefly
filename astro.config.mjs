@@ -294,6 +294,10 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		// 动态页的图片灯箱依赖，显式预构建，避免 dev 下 MIME 为空导致模块加载失败
+		optimizeDeps: {
+			include: ["@fancyapps/ui"],
+		},
 		server: {
 			watch: {
 				ignored: ["**/package/**", "**/Firefly-docs/**"],

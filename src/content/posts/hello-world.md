@@ -4,7 +4,7 @@ published: 2026-11-01
 description: ''
 image: ''
 tags: []
-category: ''
+category: '文字博客'
 draft: false 
 lang: ''
 ---
