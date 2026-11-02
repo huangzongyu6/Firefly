@@ -6,6 +6,8 @@ import CoverImage from "@/components/common/CoverImage.astro";
 import PostMetadata from "@/components/layout/PostMeta.astro";
 import PostStats from "@/components/layout/PostStats.astro";
 import { siteConfig } from "@/config";
+import I18nKey from "@/i18n/i18nKey";
+import { i18n } from "@/i18n/translation";
 import { getApiUrlList, processCoverImageSync } from "@/utils/image-utils";
 import { getFileDirFromPath, getTagUrl } from "@/utils/url-utils";
 
@@ -83,7 +85,10 @@ const descriptionClampLines = String(descriptionLines);
 const shouldClampDescription = descriptionLines > 0;
 
 const { remarkPluginFrontmatter } = await render(entry);
-const descriptionText = description || remarkPluginFrontmatter.excerpt || "";
+// 加密文章不展示摘要（避免列表页泄露正文开头），统一显示提示文案
+const descriptionText = password
+	? i18n(I18nKey.passwordProtectedDesc)
+	: description || remarkPluginFrontmatter.excerpt || "";
 const words = remarkPluginFrontmatter.words;
 const minutes = remarkPluginFrontmatter.minutes;
 ---
