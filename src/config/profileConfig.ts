@@ -12,7 +12,7 @@ export const profileConfig: ProfileConfig = {
 	name: "Craig Huang",
 
 	// 个人签名
-	bio: "Truth is, you'll never be\nready. You just need to\nbe brave enough to try.",
+	bio: "Ideas don’t come out fully formed.\nThey only become clear as you work on them.\nYou just have to get started.",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
