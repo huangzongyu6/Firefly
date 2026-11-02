@@ -22,8 +22,8 @@ export const commentConfig: CommentConfig = {
 
 	//waline评论系统配置
 	waline: {
-		// waline 后端服务地址（部署在 VPS 上，通过 nginx 反代到 /comments/）
-		serverURL: "https://www.huangzong.xyz/comments",
+		// waline 后端服务地址（独立子域名，部署在 VPS 上）
+		serverURL: "https://comments.huangzong.xyz",
 		// 设置 Waline 评论系统语言
 		lang: "zh-CN",
 		// 设置 Waline 评论系统表情地址
