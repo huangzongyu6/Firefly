@@ -22,8 +22,8 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 
 	// Meting API 配置
 	meting: {
-		// Meting API 地址（自建的 Cloudflare Worker）
-		api: "https://meting-workers.resei.workers.dev/?server=:server&type=:type&id=:id",
+		// Meting API 地址（自建的 Cloudflare Worker，走自定义域名，国内可达性优于 workers.dev）
+		api: "https://music.huangzong.xyz/?server=:server&type=:type&id=:id",
 		// 音乐平台：netease=网易云音乐, tencent=QQ音乐, kugou=酷狗音乐, xiami=虾米音乐, baidu=百度音乐
 		server: "netease",
 		// 类型：song=单曲, playlist=歌单, album=专辑, search=搜索, artist=艺术家
