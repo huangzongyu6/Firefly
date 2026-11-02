@@ -1,0 +1,85 @@
+# Sveltia CMS 配置
+# 访问地址：https://www.huangzong.xyz/admin/
+
+backend:
+  name: github
+  repo: huangzongyu6/Firefly
+  branch: master
+
+# 界面语言
+locale: zh_Hans
+
+# 图片上传位置（public 目录，直接以静态文件形式提供）
+media_folder: "public/assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+# 可选字段留空时不写入 frontmatter，避免空字符串破坏 Astro 的 schema 校验
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 一篇文章
+    folder: src/content/posts
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: "{{slug}}"
+    identifier_field: title
+    summary: "{{title}} · {{published}}"
+    sortable_fields: [published, title]
+    fields:
+      - label: 标题
+        name: title
+        widget: string
+        required: true
+
+      - label: 发布日期
+        name: published
+        widget: datetime
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        format: "YYYY-MM-DD"
+        required: true
+
+      - label: 摘要
+        name: description
+        widget: text
+        required: false
+        hint: 显示在文章卡片上的简介，留空则自动截取正文
+
+      - label: 封面图
+        name: image
+        widget: image
+        required: false
+
+      - label: 分类
+        name: category
+        widget: string
+        required: false
+        hint: 例如：文字博客
+
+      - label: 标签
+        name: tags
+        widget: list
+        required: false
+        default: []
+
+      - label: 草稿
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: 勾选后不会显示在正式站点
+
+      - label: 语言
+        name: lang
+        widget: string
+        required: false
+        hint: 留空使用站点默认语言
+
+      - label: 正文
+        name: body
+        widget: markdown
+        required: false

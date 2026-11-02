@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>内容管理</title>
+  <style>
+    /* 移动端：折叠次要工具栏，减少遮挡 */
+    @media (max-width: 768px) {
+      #first-pane-header .sui.toolbar.secondary,
+      .sui.text-editor .sui.toolbar {
+        max-height: 0;
+        overflow: hidden;
+      }
+      body.toolbars-visible #first-pane-header .sui.toolbar.secondary,
+      body.toolbars-visible .sui.text-editor .sui.toolbar {
+        max-height: 60px;
+      }
+      .sui.text-editor .sui.toolbar .inner {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+</body>
+</html>
