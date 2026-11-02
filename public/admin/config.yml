@@ -79,6 +79,18 @@ collections:
         required: false
         hint: 留空使用站点默认语言
 
+      - label: 访问密码
+        name: password
+        widget: string
+        required: false
+        hint: 填写后文章会被加密，访客需输入密码才能阅读。留空则公开。
+
+      - label: 密码提示
+        name: passwordHint
+        widget: string
+        required: false
+        hint: 访客输错密码时显示的提示，例如「我的生日」
+
       - label: 正文
         name: body
         widget: markdown
