@@ -39,9 +39,10 @@ collections:
         name: published
         widget: datetime
         date_format: "YYYY-MM-DD"
-        time_format: false
-        format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        format: "YYYY-MM-DDTHH:mm:ss"
         required: true
+        hint: 精确到分钟；日期部分决定文章排序和归档
 
       - label: 摘要
         name: description
@@ -95,3 +96,28 @@ collections:
         name: body
         widget: markdown
         required: false
+
+  - name: dynamic
+    label: 动态
+    label_singular: 一条动态
+    folder: src/content/dynamic
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{hour}}{{minute}}{{second}}"
+    summary: "{{published}}"
+    sortable_fields: [published]
+    fields:
+      - label: 发布时间
+        name: published
+        widget: datetime
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        format: "YYYY-MM-DDTHH:mm:ss"
+        required: true
+
+      - label: 内容
+        name: body
+        widget: markdown
+        required: true
+        hint: 短内容、想法、日常记录，支持 Markdown 和图片
