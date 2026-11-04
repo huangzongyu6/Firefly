@@ -18,6 +18,23 @@ output:
   omit_empty_optional_fields: true
 
 collections:
+  - name: categories
+    label: 分类
+    label_singular: 分类
+    folder: src/data/categories
+    create: true
+    extension: yml
+    format: yaml
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{title}}"
+    fields:
+      - label: 分类名称
+        name: title
+        widget: string
+        required: true
+        hint: 显示在文章卡片和分类页上的名称
+
   - name: posts
     label: 文章
     label_singular: 一篇文章
@@ -57,9 +74,13 @@ collections:
 
       - label: 分类
         name: category
-        widget: string
+        widget: relation
+        collection: categories
+        value_field: title
+        display_fields: [title]
+        search_fields: [title]
         required: false
-        hint: 例如：文字博客
+        hint: 从已有分类中选择；需要新分类时点下方的「添加分类」
 
       - label: 标签
         name: tags
