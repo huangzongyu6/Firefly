@@ -21,5 +21,8 @@
   "src:content/_demo-posts/images/1.avif": "b5b0b3bcb6bbe0e0df",
   "src:content/_demo-posts/guide/cover.avif": "c8bca9dde6d2babfb5",
   "src:assets/images/BannerWallpaper/banner-1-mobile.avif": "aa8229ba8e24a5681b",
-  "src:assets/images/BannerWallpaper/banner-1-desktop.avif": "c59848d7a74cb57a32"
+  "src:assets/images/BannerWallpaper/banner-1-desktop.avif": "c59848d7a74cb57a32",
+  "public:gallery/meme/cover.avif": "a08d7b9b928d806459",
+  "public:gallery/meme/2.avif": "47434a35333e5c4a4d",
+  "public:gallery/meme/1.avif": "a08d7b9b928d806459"
 }

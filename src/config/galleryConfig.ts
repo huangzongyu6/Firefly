@@ -15,15 +15,13 @@ export const galleryConfig: GalleryConfig = {
 		// password: 访问密码，设置后需要输入密码才能查看相册内容（可选）
 		// passwordHint: 密码提示，设置后在输入密码错误时显示（可选，需配合password使用）
 		// 每添加一个数组项就相当于添加了一个相册，记得在 public/gallery/ 目录下创建对应的子目录并放入图片
-		// 当前为空：模板自带的示例相册已移除。想加相册时按下面的结构追加一项即可。
-		// {
-		// 	id: "my-album",              // 对应 public/gallery/my-album/ 目录
-		// 	name: "我的相册",
-		// 	description: "一些照片",
-		// 	location: "拍摄地点",
-		// 	date: "2026-11-01",
-		// 	tags: ["日常"],
-		// },
+		{
+			id: "meme",
+			name: "表情包收藏",
+			description: "存一些看到就走不动道的小图。",
+			date: "2026-11-06",
+			tags: ["表情包", "猫"],
+		},
 	],
 
 	// 瀑布流最小列宽(px)，浏览器根据容器宽度自动计算列数，默认 240
