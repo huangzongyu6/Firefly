@@ -1,5 +1,6 @@
 import { getCollection } from "astro:content";
 import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import remarkBreaks from "remark-breaks";
 import {
 	dynamicSearchText,
 	dynamicSlug,
@@ -9,7 +10,10 @@ import {
 const markdownImagePattern = /!\[([^\]]*)\]\((\S+?)(?:\s+["']([^"']*)["'])?\)/g;
 
 export async function GET() {
-	const processor = await createMarkdownProcessor();
+	// remark-breaks：把单个换行渲染成 <br>，动态里换行就真的换行
+	const processor = await createMarkdownProcessor({
+		remarkPlugins: [remarkBreaks],
+	});
 	const dynamics = sortDynamics(await getCollection("dynamic"));
 	const data = await Promise.all(
 		dynamics.map(async (entry) => {
