@@ -1,0 +1,114 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import Search from "@/components/controls/Search.svelte";
+import ThemeToggle from "@/components/controls/ThemeToggle.astro";
+import { profileConfig } from "@/config/profileConfig";
+import { sideNavConfig } from "@/config/sideNavConfig";
+import { url } from "@/utils/url-utils";
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+const isActive = (href: string): boolean => {
+	const target = href.replace(/\/+$/, "") || "/";
+	if (target === "/") return pathname === "/";
+	return pathname === target || pathname.startsWith(`${target}/`);
+};
+
+// 个人签名放到左栏底部，保留原始换行
+const bio = (profileConfig.bio || "").trim();
+---
+
+<aside class="ps-sidenav">
+  <div class="ps-tools">
+    <div class="ps-search-slot"><Search /></div>
+    <div class="ps-theme-slot"><ThemeToggle /></div>
+  </div>
+
+  <a class="ps-brand" href={url("/")} aria-label="首页">
+    <div class="ps-avatar-wrap">
+      <ImageWrapper
+        src={profileConfig.avatar || ""}
+        alt={profileConfig.name}
+        class="ps-avatar"
+        widths={[96]}
+        sizes="48px"
+        loading="eager"
+      />
+    </div>
+    <div class="ps-brand-text">
+      <div class="ps-name">{profileConfig.name}</div>
+    </div>
+  </a>
+
+  <a
+    class:list={["ps-nav-primary", { "is-active": isActive(sideNavConfig.primary.url) }]}
+    href={url(sideNavConfig.primary.url)}
+    data-nav-url={url(sideNavConfig.primary.url)}
+    aria-current={isActive(sideNavConfig.primary.url) ? "page" : undefined}
+  >
+    {sideNavConfig.primary.name}
+  </a>
+
+  <nav class="ps-nav" aria-label="主导航">
+    {sideNavConfig.items.map((item) => (
+      <a
+        class:list={["ps-nav-item", { "is-active": isActive(item.url) }]}
+        href={url(item.url)}
+        data-nav-url={url(item.url)}
+        aria-current={isActive(item.url) ? "page" : undefined}
+      >
+        <Icon is:inline name={item.icon} class="ps-nav-icon" />
+        <span>{item.name}</span>
+      </a>
+    ))}
+  </nav>
+
+  {
+    bio && (
+      <div class="ps-bio" title={bio}>
+        {bio.split("\n").map((line) => (
+          <span>{line}</span>
+        ))}
+      </div>
+    )
+  }
+</aside>
+
+<script>
+	const normalizePath = (p: string) => p.replace(/\/+$/, "") || "/";
+
+	function updateSideNavActive() {
+		const path = normalizePath(location.pathname);
+		document
+			.querySelectorAll<HTMLElement>(".ps-sidenav [data-nav-url]")
+			.forEach((el) => {
+				const target = normalizePath(el.dataset.navUrl || "/");
+				const active =
+					target === "/"
+						? path === "/"
+						: path === target || path.startsWith(`${target}/`);
+				el.classList.toggle("is-active", active);
+				if (active) el.setAttribute("aria-current", "page");
+				else el.removeAttribute("aria-current");
+			});
+	}
+
+	// 点击后立即高亮
+	document.addEventListener("click", (event) => {
+		const link = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+			".ps-sidenav [data-nav-url]",
+		);
+		if (!link) return;
+		document
+			.querySelectorAll<HTMLElement>(".ps-sidenav [data-nav-url]")
+			.forEach((el) => el.classList.remove("is-active"));
+		link.classList.add("is-active");
+	});
+
+	// Swup 换页后按真实 URL 校正
+	document.addEventListener("swup:page:view", updateSideNavActive);
+	document.addEventListener("astro:page-load", updateSideNavActive);
+	window.addEventListener("load", updateSideNavActive);
+	window.addEventListener("popstate", updateSideNavActive);
+</script>

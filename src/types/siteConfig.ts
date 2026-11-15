@@ -140,6 +140,8 @@ export type SiteConfig = {
 		outdatedThreshold?: number;
 		// 是否显示分享海报按钮
 		sharePoster?: boolean;
+		// 是否显示文末「相关文章」模块
+		showRelatedPosts?: boolean;
 		// OpenGraph图片功能
 		generateOgImages: boolean;
 	};

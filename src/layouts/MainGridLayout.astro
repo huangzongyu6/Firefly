@@ -41,6 +41,12 @@ import Layout from "./Layout.astro";
 
 import "@/styles/markdown.css";
 import "@/styles/expressive-code.css";
+import "@/styles/redesign.css";
+
+import SideNav from "@/components/layout/SideNav.astro";
+import RightRail from "@/components/widget/RightRail.astro";
+import MobileTopBar from "@/components/layout/MobileTopBar.astro";
+import MobileTabBar from "@/components/layout/MobileTabBar.astro";
 
 interface Props {
 	title?: string;
@@ -164,7 +170,7 @@ const mainPanelTop =
 // 当banner模式被禁用时，主内容区域应该始终从顶栏下面开始
 // 非首页在小于1024px时会通过 mobile-main-no-banner CSS类覆盖top值为5.5rem
 const finalMainPanelTop =
-	isBannerMode && isBackgroundEnabled ? mainPanelTop : "5.5rem";
+	isBannerMode && isBackgroundEnabled ? mainPanelTop : "0rem";
 
 // 获取响应式侧边栏配置
 const sidebarConfig = getResponsiveSidebarConfig();
@@ -281,6 +287,8 @@ const hasMultipleImages =
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} postSlug={postSlug}>
 
+<MobileTopBar />
+
 
 <!-- 为全屏壁纸模式添加body类 -->
 {shouldEnableTransparency && (
@@ -289,26 +297,8 @@ const hasMultipleImages =
 	</script>
 )}
 
-<!-- Navbar -->
+<!-- 头部插槽（原顶部导航已移除，改由左栏/手机顶栏承担） -->
 <slot slot="head" name="head"></slot>
-<div
-    id="top-row"
-    class="z-50 pointer-events-none relative transition-all duration-700 mx-auto"
-    class:list={[
-        stickyNavbar ? "h-18 fixed top-0 left-0 right-0 z-80" : "",
-        navbarWidthFull ? "" : "w-full xl:w-[92vw] max-w-(--page-width) px-0 md:px-4",
-    ]}
->
-    <div
-        id="navbar-wrapper"
-        class:list={[
-            "pointer-events-auto transition-all",
-            stickyNavbar ? "" : "sticky top-0",
-        ]}
-    >
-        <Navbar></Navbar>
-    </div>
-</div>
 
 <!-- Wallpaper - 如果允许切换则始终渲染，否则只渲染当前模式 -->
 {(isWallpaperSwitchable || isBannerMode || isFullscreenMode || isOverlayMode) && (
@@ -807,7 +797,7 @@ const hasMultipleImages =
 <!-- Main content -->
 <div class={`absolute w-full z-30 pointer-events-none ${mobileNonHomeBannerClass ? 'mobile-main-no-banner' : ''} ${!(isBannerMode && isBackgroundEnabled) ? 'no-banner-layout' : ''}`} style={isFullscreenMode ? 'top: 0;' : `top: ${finalMainPanelTop}`}>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
-    <div class="relative w-full xl:w-[92vw] max-w-(--page-width) mx-auto pointer-events-auto">
+    <div class="ps-shell relative w-full xl:w-[92vw] max-w-(--page-width) mx-auto pointer-events-auto">
         <div id="main-grid"
           class={`transition duration-700 w-full left-0 right-0 grid ${gridCols} grid-rows-[auto_1fr_auto] lg:grid-rows-[auto] mx-auto gap-4 px-2 md:px-4 ${!sidebarConfig.mobileShowSidebar ? 'mobile-no-sidebar' : ''}`}
           data-sidebar-enable={sidebarLayoutConfig.enable ? "true" : "false"}
@@ -823,34 +813,13 @@ const hasMultipleImages =
                 如果全局配置为仅右侧栏(position: right)，则使用动态容器(被swup替换)，以便在文章页显示左侧栏。
                 注意：为了满足swup要求所有containers必须存在，我们在所有模式下都必须渲染 #left-sidebar-dynamic。
             */}
-            {sidebarLayoutConfig.position !== "right" ? (
-                <>
-                    {sidebarLayoutConfig.enable ? (
-                        <div id="left-sidebar-wrapper" class="contents" data-hide-sidebar-on-post={hideSidebarOnPostPage ? "true" : "false"} style="contain: layout style paint;">
-                            {effectiveHasLeftComponents && (
-                                <SideBar
-                                    side={effectiveIsBothSidebars ? "left" : undefined}
-                                    class={sidebarClass}
-                                    headings={headings}
-                                    encrypted={encrypted}
-                                />
-                            )}
-                        </div>
-                    ) : (
-                        <div id="left-sidebar-wrapper" class="hidden"></div>
-                    )}
-                    <div id="left-sidebar-dynamic" class="hidden transition-swup-fade"></div>
-                </>
-            ) : (
-                <div id="left-sidebar-dynamic" class="contents transition-swup-fade">
-                    {effectiveIsBothSidebars && effectiveHasLeftComponents && (
-						<SideBar side="left" class={sidebarClass} headings={headings} encrypted={encrypted}></SideBar>
-                    )}
-                </div>
-            )}
-                    
+            <div class="ps-left-col">
+                <SideNav />
+            </div>
+            <div id="left-sidebar-dynamic" class="hidden transition-swup-fade"></div>
+
             {/* 主内容区包装器 - 包含静态栏位和swup容器，作为单个grid item */}
-            <div class={staticBarClass}>
+            <div class="ps-main-col">
                 {/* 分类导航栏 - 全站渲染并显示 */}
                 {shouldRenderCategoryBar && <div id="category-bar-wrapper"><CategoryBar currentPostCategory={postCategory} /></div>}
                 {/* 主内容区 - 始终渲染，确保 Swup 容器存在 */}
@@ -876,33 +845,10 @@ const hasMultipleImages =
                 注意：为了满足swup要求所有containers必须存在，我们在所有模式下都必须渲染 #right-sidebar-dynamic。
                 右侧边栏的显示由CSS类控制。
             */}
-            {(sidebarLayoutConfig.position === "both" || sidebarLayoutConfig.position === "right") ? (
-                <>
-                    {sidebarLayoutConfig.enable ? (
-                        <div id="right-sidebar-static" class="contents" data-hide-sidebar-on-post={hideSidebarOnPostPage ? "true" : "false"}>
-                            {(effectiveIsBothSidebars || sidebarLayoutConfig.position === "right") && effectiveHasRightComponents && (
-								<SideBar side="right" class={rightSidebarClass} headings={headings} encrypted={encrypted}></SideBar>
-                            )}
-                        </div>
-                    ) : (
-                        <div id="right-sidebar-static" class="hidden"></div>
-                    )}
-                    <div id="right-sidebar-dynamic" class="hidden transition-swup-fade"></div>
-                </>
-            ) : (
-                <div id="right-sidebar-dynamic" class="contents transition-swup-fade">
-                    {effectiveIsBothSidebars && effectiveHasRightComponents && (
-						<SideBar side="right" class={rightSidebarClass} headings={headings} encrypted={encrypted}></SideBar>
-                    )}
-                </div>
-            )}
-
-            {/* 移动端底部组件 - 768px及以下显示 */}
-            {sidebarLayoutConfig.mobileBottomComponents && sidebarLayoutConfig.mobileBottomComponents.length > 0 && (
-                <div id="mobile-bottom-sidebar" class="col-span-1 block md:hidden mt-4">
-					<SideBar side="bottom" headings={headings} encrypted={encrypted}></SideBar>
-                </div>
-            )}
+            <div class="ps-right-col">
+                <RightRail />
+            </div>
+            <div id="right-sidebar-dynamic" class="hidden transition-swup-fade"></div>
 
             <div class={footerClassName}>
                 <Footer></Footer>
@@ -915,6 +861,8 @@ const hasMultipleImages =
 </div>
 
 <FloatingControls headings={headings} encrypted={encrypted} />
+
+<MobileTabBar />
 
 
 </Layout>

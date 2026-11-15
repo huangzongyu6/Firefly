@@ -111,7 +111,7 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
-	categoryBar: true,
+	categoryBar: false,
 
 	// 归档页是否折叠非最新年份文章，禁用后默认展开全部年份
 	foldArticle: true,
@@ -139,7 +139,7 @@ export const siteConfig: SiteConfig = {
 			// 是否显示分类
 			showCategory: true,
 			// 是否显示标签
-			showTags: true,
+			showTags: false,
 			// 标签数量，设为 0 则不限制
 			tagCount: 5,
 			// 是否显示字数
@@ -181,7 +181,9 @@ export const siteConfig: SiteConfig = {
 		// 文章过期阈值（天数），超过此天数才显示"上次编辑"卡片
 		outdatedThreshold: 30,
 		// 是否开启分享海报生成功能
-		sharePoster: true,
+		sharePoster: false,
+		// 是否显示文末「相关文章」模块
+		showRelatedPosts: false,
 		// OpenGraph图片功能，注意开启后要渲染很长时间，不建议本地调试的时候开启
 		generateOgImages: false,
 	},

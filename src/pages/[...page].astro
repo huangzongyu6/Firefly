@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import Pagination from "@/components/common/Pagination.astro";
 import PostPage from "@/components/layout/PostPage.astro";
 import { siteConfig } from "@/config";
+import { profileConfig } from "@/config/profileConfig";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@/utils/content-utils";
 export const getStaticPaths = (async ({ paginate }) => {
@@ -16,9 +17,18 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props;
 
 const len = page.data.length;
+const bioLines = (profileConfig.bio || "").split("\n").filter(Boolean);
 ---
 
 <MainGridLayout>
+  <div class="ps-home-bio">
+    {bioLines.map((line) => <span>{line}</span>)}
+  </div>
+
+  <div class="ps-section-head">
+    <h2 class="ps-section-title">最近记录</h2>
+    <p class="ps-section-sub">Thoughts, notes &amp; moments.</p>
+  </div>
   <PostPage page={page} />
   {
     page.total > page.size && (

@@ -1,10 +1,53 @@
 ---
-import ArchivePanel from "@components/controls/ArchivePanel.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "@/utils/content-utils";
+import { getPostUrlBySlug } from "@/utils/url-utils";
+
+// 全量按发布时间倒序
+const posts = (await getSortedPostsList())
+	.slice()
+	.sort((a, b) => b.data.published.getTime() - a.data.published.getTime());
+
+// 按年份分组
+const grouped = new Map<number, typeof posts>();
+for (const post of posts) {
+	const year = post.data.published.getFullYear();
+	if (!grouped.has(year)) grouped.set(year, []);
+	grouped.get(year)?.push(post);
+}
+const groups = [...grouped.entries()]
+	.map(([year, items]) => ({ year, items }))
+	.sort((a, b) => b.year - a.year);
+
+const fmtDate = (date: Date): string => {
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	return `${month}-${day}`;
+};
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>
-  <ArchivePanel />
+  <div class="ps-section-head">
+    <h2 class="ps-section-title">{i18n(I18nKey.archive)}</h2>
+    <p class="ps-section-sub">共 {posts.length} 篇文章 · 按年份</p>
+  </div>
+
+  {groups.map((group) => (
+    <section class="ps-archive-group">
+      <h3 class="ps-archive-year">{group.year}</h3>
+      <div class="ps-archive-list">
+        {group.items.map((post) => (
+          <a class="ps-archive-item" href={getPostUrlBySlug(post.id)}>
+            <span class="ps-archive-date">{fmtDate(post.data.published)}</span>
+            <span class="ps-archive-title">{post.data.title}</span>
+            {post.data.category && (
+              <span class="ps-archive-cat">{post.data.category}</span>
+            )}
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
 </MainGridLayout>

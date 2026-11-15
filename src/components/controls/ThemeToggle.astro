@@ -1,0 +1,35 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<button
+  type="button"
+  class="ps-theme-toggle"
+  aria-label="切换明暗模式"
+  title="切换明暗模式"
+>
+  <Icon
+    is:inline
+    name="material-symbols:wb-sunny-outline-rounded"
+    class="ps-theme-icon ps-theme-sun"
+  />
+  <Icon
+    is:inline
+    name="material-symbols:dark-mode-outline-rounded"
+    class="ps-theme-icon ps-theme-moon"
+  />
+</button>
+
+<script>
+	import { DARK_MODE, LIGHT_MODE } from "@/constants/constants";
+	import { setTheme } from "@/utils/setting-utils";
+
+	// 事件委托：Swup 换页后按钮会被替换，但 document 上的监听一直有效
+	document.addEventListener("click", (event) => {
+		const target = event.target as HTMLElement | null;
+		if (!target?.closest(".ps-theme-toggle")) return;
+		event.preventDefault();
+		const isDark = document.documentElement.classList.contains("dark");
+		setTheme(isDark ? LIGHT_MODE : DARK_MODE);
+	});
+</script>

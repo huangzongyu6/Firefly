@@ -1,0 +1,30 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import LightDarkSwitch from "@/components/controls/LightDarkSwitch.svelte";
+import ThemeToggle from "@/components/controls/ThemeToggle.astro";
+import { profileConfig } from "@/config/profileConfig";
+import { url } from "@/utils/url-utils";
+---
+
+<header class="ps-mobile-bar">
+  <a class="ps-mobile-brand" href={url("/about/")} aria-label="关于我">
+    <ImageWrapper
+      src={profileConfig.avatar || ""}
+      alt={profileConfig.name}
+      class="ps-mobile-avatar"
+      widths={[64]}
+      sizes="32px"
+      loading="eager"
+    />
+    <span class="ps-mobile-name">{profileConfig.name}</span>
+  </a>
+
+  <div class="ps-mobile-actions">
+    <a class="ps-mobile-search" href={url("/search/")} aria-label="搜索">
+      <span>搜索</span>
+      <Icon is:inline name="material-symbols:search-rounded" class="ps-mobile-search-icon" />
+    </a>
+    <div class="ps-mobile-theme"><ThemeToggle /></div>
+  </div>
+</header>

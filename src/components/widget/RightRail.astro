@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content";
+import MusicPlayer from "@/components/features/MusicPlayer.astro";
+import { rightRailConfig } from "@/config/rightRailConfig";
+import { siteConfig } from "@/config/siteConfig";
+import { formatDynamicDate } from "@/utils/date-utils";
+import {
+	dynamicAnchor,
+	dynamicPlainText,
+	sortDynamics,
+} from "@/utils/dynamic-utils";
+import { url } from "@/utils/url-utils";
+
+const { showMusic, showDynamics, dynamicLimit, quote } = rightRailConfig;
+
+const dynamics = showDynamics && siteConfig.pages.dynamic
+	? sortDynamics(await getCollection("dynamic"))
+			.slice(0, Math.max(1, dynamicLimit))
+			.map((entry) => ({
+				id: dynamicAnchor(entry.id),
+				text: dynamicPlainText(entry),
+				published: entry.data.published,
+			}))
+	: [];
+---
+
+<aside class="ps-rail">
+  {showMusic && (
+    <section class="ps-rail-block">
+      <MusicPlayer />
+    </section>
+  )}
+
+  {showDynamics && dynamics.length > 0 && (
+    <section class="ps-rail-block">
+      <h3 class="ps-rail-title">最新动态</h3>
+      <div class="ps-dyn-list">
+        {dynamics.map((entry) => (
+          <a class="ps-dyn-item" href={url(`/dynamic/#${entry.id}`)}>
+            <time class="ps-dyn-time" datetime={entry.published.toISOString()}>
+              {formatDynamicDate(entry.published)}
+            </time>
+            <p class="ps-dyn-text">{entry.text}</p>
+          </a>
+        ))}
+      </div>
+      <a class="ps-rail-more" href={url("/dynamic/")}>全部动态 →</a>
+    </section>
+  )}
+
+  {quote.enabled && (
+    <section class="ps-rail-block">
+      <h3 class="ps-rail-title">{quote.title}</h3>
+      <div class="ps-quote">
+        {quote.lines.map((line) => <p>{line}</p>)}
+      </div>
+    </section>
+  )}
+</aside>
