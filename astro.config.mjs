@@ -21,6 +21,7 @@ import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Languag
 import rehypeCallouts from "rehype-callouts";
 import rehypeSlug from "rehype-slug";
 import remarkAdmonitionToBlockquoteCallout from "remark-admonition-to-blockquote-callout";
+import remarkBreaks from "remark-breaks";
 import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
@@ -231,6 +232,9 @@ export default defineConfig({
 	markdown: {
 		processor: unified({
 			remarkPlugins: [
+				// 单个换行 = 换行（<br>）；连续两个换行 = 新段落
+				// 与写作习惯一致：Enter 换行，Enter 两次分段
+				remarkBreaks,
 				...(siteConfig.post.rehypeCallouts.enablePythonMarkdownAdmonitions !== false
 					? [remarkAdmonitionToBlockquoteCallout]
 					: []),

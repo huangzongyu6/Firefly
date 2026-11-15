@@ -117,6 +117,9 @@ collections:
         name: body
         widget: markdown
         required: false
+        # 用纯 Markdown 编辑器：Enter 就是换行，Enter 两次才是分段
+        modes: [raw]
+        hint: 按 Enter 换行，按两次 Enter 分段
 
   - name: dynamic
     label: 动态
@@ -141,4 +144,5 @@ collections:
         name: body
         widget: markdown
         required: true
-        hint: 短内容、想法、日常记录，支持 Markdown 和图片
+        modes: [raw]
+        hint: 短内容、想法、日常记录，支持 Markdown 和图片；Enter 换行，Enter 两次分段
