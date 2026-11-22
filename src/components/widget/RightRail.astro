@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/siteConfig";
 import { formatDynamicDate } from "@/utils/date-utils";
 import {
 	dynamicAnchor,
-	dynamicPlainText,
+	dynamicMultilineText,
 	sortDynamics,
 } from "@/utils/dynamic-utils";
 import { url } from "@/utils/url-utils";
@@ -18,7 +18,7 @@ const dynamics = showDynamics && siteConfig.pages.dynamic
 			.slice(0, Math.max(1, dynamicLimit))
 			.map((entry) => ({
 				id: dynamicAnchor(entry.id),
-				text: dynamicPlainText(entry),
+				text: dynamicMultilineText(entry),
 				published: entry.data.published,
 			}))
 	: [];
